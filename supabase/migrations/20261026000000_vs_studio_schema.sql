@@ -192,76 +192,75 @@ ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activity_log ENABLE ROW LEVEL SECURITY;
 
 -- 1. ADMINS POLICIES:
--- Authenticated admins can view other admins
 CREATE POLICY "Admins can view admin list"
     ON public.admins
     FOR SELECT
-    TO authenticated
-    USING (public.is_admin());
+    TO anon, authenticated
+    USING (true);
 
 -- 2. INQUIRIES POLICIES:
--- Anonymous public website users can INSERT new inquiries
+-- Public site can insert inquiries
 CREATE POLICY "Public website can insert inquiries"
     ON public.inquiries
     FOR INSERT
-    TO anon
+    TO anon, authenticated
     WITH CHECK (true);
 
--- Authenticated admins have full CRUD on inquiries
-CREATE POLICY "Admins have full access to inquiries"
+-- Dashboard can view, update, and manage inquiries
+CREATE POLICY "Dashboard can access inquiries"
     ON public.inquiries
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- 3. CLIENTS POLICIES:
-CREATE POLICY "Admins have full access to clients"
+CREATE POLICY "Dashboard access to clients"
     ON public.clients
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- 4. PROJECTS POLICIES:
-CREATE POLICY "Admins have full access to projects"
+CREATE POLICY "Dashboard access to projects"
     ON public.projects
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- 5. TASKS POLICIES:
-CREATE POLICY "Admins have full access to tasks"
+CREATE POLICY "Dashboard access to tasks"
     ON public.tasks
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- 6. PROPOSALS POLICIES:
-CREATE POLICY "Admins have full access to proposals"
+CREATE POLICY "Dashboard access to proposals"
     ON public.proposals
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- 7. PAYMENTS POLICIES:
-CREATE POLICY "Admins have full access to payments"
+CREATE POLICY "Dashboard access to payments"
     ON public.payments
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- 8. ACTIVITY LOG POLICIES:
-CREATE POLICY "Admins can view and insert activity log"
+CREATE POLICY "Dashboard access to activity log"
     ON public.activity_log
     FOR ALL
-    TO authenticated
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- ==============================================================================
 -- STORAGE BUCKET CONFIGURATION FOR CLIENT FILES
