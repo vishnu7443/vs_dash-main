@@ -287,9 +287,21 @@ CREATE POLICY "Admins can access client files"
     WITH CHECK (bucket_id = 'client-files' AND public.is_admin());
 
 -- ==============================================================================
--- ENABLE REALTIME PUBLICATION FOR INQUIRIES & CRITICAL TABLES
+-- ENABLE REALTIME PUBLICATION FOR INQUIRIES & CRITICAL TABLES (IDEMPOTENT)
 -- ==============================================================================
-ALTER PUBLICATION supabase_realtime ADD TABLE public.inquiries;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.projects;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.tasks;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.payments;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'inquiries') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.inquiries;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'projects') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.projects;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'tasks') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.tasks;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'payments') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.payments;
+    END IF;
+END $$;
+
