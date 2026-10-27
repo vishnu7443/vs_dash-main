@@ -325,6 +325,23 @@ export function useInquiries() {
           }
         }
 
+        // Check if assigned_to is a valid admin in Supabase to prevent foreign key errors
+        let safeAssignedTo: string | null = validated.assigned_to || null;
+        if (safeAssignedTo) {
+          try {
+            const { data: adminMatch } = await supabase
+              .from('admins')
+              .select('id')
+              .eq('id', safeAssignedTo)
+              .maybeSingle();
+            if (!adminMatch) {
+              safeAssignedTo = null;
+            }
+          } catch {
+            safeAssignedTo = null;
+          }
+        }
+
         // Insert project
         const { data: newProject, error: projectError } = await supabase
           .from('projects')
@@ -335,7 +352,7 @@ export function useInquiries() {
             status: 'planning',
             start_date: validated.start_date,
             due_date: validated.due_date || null,
-            assigned_to: validated.assigned_to || null,
+            assigned_to: safeAssignedTo,
             progress_percent: 0,
           } as any)
           .select('id, title')

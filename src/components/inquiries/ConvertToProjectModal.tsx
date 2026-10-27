@@ -49,7 +49,12 @@ export const ConvertToProjectModal: React.FC<ConvertToProjectModalProps> = ({
   useEffect(() => {
     if (inquiry) {
       setProjectTitle(`${inquiry.company || inquiry.name} — ${formatServiceType(inquiry.service_type)}`);
-      setDueDate(inquiry.deadline || '');
+      // Only set dueDate if format is valid yyyy-MM-dd
+      if (inquiry.deadline && /^\d{4}-\d{2}-\d{2}$/.test(inquiry.deadline)) {
+        setDueDate(inquiry.deadline);
+      } else {
+        setDueDate('');
+      }
       setErrorMsg(null);
       if (matchingClient) {
         setExistingClientId(matchingClient.id);
