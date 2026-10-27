@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VS Studio — Public Website Form Connection Tester</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .container { max-width: 680px; width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 36px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    h1 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    p.subtitle { font-size: 14px; color: #94a3b8; margin-bottom: 24px; line-height: 1.5; }
+    .config-box { background: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+    .config-box label { display: block; font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .config-box input { width: 100%; padding: 10px 14px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 13px; margin-bottom: 12px; outline: none; }
+    .config-box input:focus { border-color: #3b82f6; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .full-width { grid-column: span 2; }
+    label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; font-size: 13px; outline: none; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: #3b82f6; }
+    textarea { height: 90px; resize: vertical; }
+    button.submit-btn { width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform 0.1s, opacity 0.2s; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
+    button.submit-btn:hover { opacity: 0.95; }
+    button.submit-btn:active { transform: scale(0.99); }
+    button.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .response-card { margin-top: 20px; padding: 16px; border-radius: 12px; font-size: 13px; display: none; line-height: 1.5; }
+    .response-card.success { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #6ee7b7; }
+    .response-card.error { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; }
+    pre { background: #090d16; padding: 10px; border-radius: 8px; margin-top: 10px; overflow-x: auto; font-size: 11px; color: #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; display: inline-block;"></span>
+      VS Studio External Form Tester
+    </div>
+    <h1>Connect Your Public Website to VS Studio</h1>
+    <p class="subtitle">
+      Use this interactive simulator to submit a lead directly into your Supabase database.
+      Keep your VS Studio Admin dashboard open in another tab to watch the live toast alert and real-time feed update!
+    </p>
+
+    <!-- Supabase Credentials Config -->
+    <div class="config-box">
+      <label>Supabase Project URL</label>
+      <input type="url" id="sb-url" placeholder="https://your-project.supabase.co" />
+
+      <label>Supabase Anon Key (Public Key)</label>
+      <input type="text" id="sb-anon" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+      <span style="font-size: 11px; color: #64748b;">
+        🔒 Safe: Uses your public Anon Key only. RLS enforces that this form can ONLY insert new inquiries.
+      </span>
+    </div>
+
+    <!-- The Public Inquiry Form -->
+    <form id="test-form">
+      <div class="form-grid">
+        <div>
+          <label>Prospect Name *</label>
+          <input type="text" id="name" value="Marcus Sterling" required />
+        </div>
+        <div>
+          <label>Email Address *</label>
+          <input type="email" id="email" value="marcus@sterlingmedia.io" required />
+        </div>
+        <div>
+          <label>Company Name</label>
+          <input type="text" id="company" value="Sterling Media Group" />
+        </div>
+        <div>
+          <label>Phone Number</label>
+          <input type="tel" id="phone" value="+1 (415) 890-2341" />
+        </div>
+        <div>
+          <label>Service Required</label>
+          <select id="service_type">
+            <option value="website_design_dev" selected>Website Design & Dev</option>
+            <option value="logo_branding">Logo & Brand Identity</option>
+            <option value="ai_agents_automation">AI Agents & Automation</option>
+          </select>
+        </div>
+        <div>
+          <label>Budget Range</label>
+          <select id="budget_range">
+            <option value="$3k - $5k">$3,000 - $5,000</option>
+            <option value="$5k - $10k" selected>$5,000 - $10,000</option>
+            <option value="$10k - $25k">$10,000 - $25,000</option>
+            <option value="$25k+">$25,000+</option>
+          </select>
+        </div>
+        <div class="full-width">
+          <label>Project Requirements / Brief *</label>
+          <textarea id="requirements" required>We are redesigning our agency presence and need a high-converting web app with sleek dark-mode aesthetics, custom 3D animations, and Supabase backend integration.</textarea>
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn" class="submit-btn">
+        🚀 Transmit Project Brief to Supabase
+      </button>
+    </form>
+
+    <div id="response-box" class="response-card"></div>
+  </div>
+
+  <script>
+    // Auto-load config from localStorage if previously entered
+    var savedUrl = localStorage.getItem('vs_tester_url') || '';
+    var savedKey = localStorage.getItem('vs_tester_key') || '';
+    if (savedUrl) document.getElementById('sb-url').value = savedUrl;
+    if (savedKey) document.getElementById('sb-anon').value = savedKey;
+
+    document.getElementById('test-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      var url = document.getElementById('sb-url').value.trim();
+      var key = document.getElementById('sb-anon').value.trim();
+      var respBox = document.getElementById('response-box');
+      var btn = document.getElementById('submit-btn');
+
+      if (!url || !key) {
+        alert('Please fill in your Supabase Project URL and Anon Key first.');
+        return;
+      }
+
+      localStorage.setItem('vs_tester_url', url);
+      localStorage.setItem('vs_tester_key', key);
+
+      btn.disabled = true;
+      btn.innerText = 'Transmitting to Supabase...';
+      respBox.style.display = 'none';
+
+      var payload = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim().toLowerCase(),
+        company: document.getElementById('company').value.trim() || null,
+        phone: document.getElementById('phone').value.trim() || null,
+        service_type: document.getElementById('service_type').value,
+        budget_range: document.getElementById('budget_range').value,
+        requirements: document.getElementById('requirements').value.trim(),
+        status: 'new'
+      };
+
+      try {
+        var cleanUrl = url.replace(/\/+$/, '') + '/rest/v1/inquiries';
+        var res = await fetch(cleanUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': key,
+            'Authorization': 'Bearer ' + key,
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        var json = await res.json();
+
+        if (res.ok) {
+          respBox.className = 'response-card success';
+          respBox.innerHTML = '<strong>🎉 Lead Successfully Stored in Supabase!</strong><br/>' +
+            'Switch to your VS Studio Admin tab (<strong>http://localhost:5174/inquiries</strong>) — you should see the live alert notification and this new inquiry in real-time!' +
+            '<pre>' + JSON.stringify(json, null, 2) + '</pre>';
+        } else {
+          respBox.className = 'response-card error';
+          respBox.innerHTML = '<strong>❌ Supabase Returned an Error (' + res.status + '):</strong><br/>' +
+            '<pre>' + JSON.stringify(json, null, 2) + '</pre><br/>' +
+            '<em>Tip: Verify that you ran the SQL migration in Supabase to enable the "Public website can insert inquiries" policy.</em>';
+        }
+      } catch (err) {
+        respBox.className = 'response-card error';
+        respBox.innerHTML = '<strong>❌ Network / Fetch Error:</strong> ' + err.message;
+      } finally {
+        respBox.style.display = 'block';
+        btn.disabled = false;
+        btn.innerText = '🚀 Transmit Project Brief to Supabase';
+      }
+    });
+  </script>
+</body>
+</html>
